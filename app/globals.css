@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/switzer/Switzer-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* ============================================================
+     MAISON TANNEURS — Polène-tier warm-neutral palette.
+     Paper-white surfaces, warm charcoal type, cognac as accent
+     only (never as a fill). Never pure #fff / pure #000.
+     Confirmed against eng.polene-paris.com.
+     ============================================================ */
+
+  --color-white: #ffffff;
+  --color-paper: #f8f6f1;
+  --color-paper-soft: #efece5;
+  --color-paper-alt: #e8e4d9;
+  --color-plate: #f3f0e9;
+
+  --color-ink: #2c2a28;
+  --color-ink-soft: #3a3835;
+  --color-ink-muted: #6b6864;
+  --color-warm-black: #1f1d1b;
+  --color-ivory: #f7f5ee;
+  --color-ivory-soft: rgba(247, 245, 238, 0.72);
+
+  --color-cognac: #7a4a2b;
+  --color-cognac-hi: #9a5a2b;
+  --color-bronze: #8c7a5a;
+  --color-bronze-on-dark: #a8997e;
+  --color-oxblood: #5e1f24;
+
+  --color-rule: rgba(15, 12, 8, 0.12);
+  --color-rule-soft: rgba(15, 12, 8, 0.06);
+  --color-rule-on-dark: rgba(247, 245, 238, 0.22);
+
+  --font-display: "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Switzer", "Inter", system-ui, -apple-system, sans-serif;
+}
+
+html, body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display { font-family: var(--font-display); }
+
+/* Eyebrow / spec labels — small uppercase tracked text used as
+   section markers (§01, MATERIALS, etc.). Bronze on light, ivory on dark. */
+.tech-label {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-bronze);
+  font-weight: 500;
+}
+.tech-label--ondark { color: var(--color-bronze-on-dark); }
+
+.tech-meta {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* Hero Ken-Burns drift used by HeroCarousel. */
+.hero-kenburns {
+  animation: kenburns 11s ease-out forwards;
+  transform-origin: center center;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from { transform: scale(1.02); }
+  to   { transform: scale(1.09); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
