@@ -35,13 +35,43 @@ const PUBLISHED_STATUSES = new Set(["available", "reserved"])
 export async function fetchAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
-    .select("*")
+    .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
     .in("status", ["available", "reserved"])
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(100)
   if (error || !data) return []
   return (data as Product[]).filter((p) => !HIDDEN_SKUS.has(p.slug) && PUBLISHED_STATUSES.has(p.status))
+}
+
+/* Lightweight card shape — used by listing pages where we don't need the
+   full 9-image array per card. Reduces RSC payload meaningfully. */
+export type ProductCard = Pick<
+  Product,
+  "id" | "title" | "slug" | "category" | "price" | "featured" | "status"
+> & { image: string }
+
+export async function fetchAllProductCards(): Promise<ProductCard[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,title,slug,category,price,featured,status,images")
+    .in("status", ["available", "reserved"])
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(100)
+  if (error || !data) return []
+  return data
+    .filter((p) => !HIDDEN_SKUS.has(p.slug) && PUBLISHED_STATUSES.has(p.status))
+    .map((p) => ({
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      category: p.category,
+      price: p.price,
+      featured: p.featured,
+      status: p.status,
+      image: (p.images && p.images[0]) || "/placeholder.svg",
+    }))
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
@@ -53,9 +83,26 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
 }
 
 export async function fetchFeaturedProducts(limit = 6): Promise<Product[]> {
-  const all = await fetchAllProducts()
-  const featured = all.filter((p) => p.featured)
-  return (featured.length >= limit ? featured : all).slice(0, limit)
+  // Direct query — featured rows only, narrow column list so the RSC payload
+  // doesn't ship every product's 9-image array down to the client.
+  const { data } = await supabase
+    .from("products")
+    .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
+    .in("status", ["available", "reserved"])
+    .eq("featured", true)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+  if (!data || data.length === 0) {
+    // Fallback when no rows are flagged featured — first N published.
+    const { data: any2 } = await supabase
+      .from("products")
+      .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
+      .in("status", ["available", "reserved"])
+      .order("created_at", { ascending: false })
+      .limit(limit)
+    return (any2 || []).filter((p) => !HIDDEN_SKUS.has(p.slug)) as Product[]
+  }
+  return (data as Product[]).filter((p) => !HIDDEN_SKUS.has(p.slug))
 }
 
 // Every SKU has `<slug>-pdp-white.webp` as images[0] (canonical plate shot).

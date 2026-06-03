@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Navigation } from "@/components/Navigation"
 import { EditorialFilm } from "@/components/EditorialFilm"
 import { Footer } from "@/components/Footer"
-import { fetchAllProducts, productHero, formatPrice } from "@/lib/supabase"
+import { fetchAllProductCards, formatPrice } from "@/lib/supabase"
 
 export const revalidate = 300
 
@@ -13,7 +13,7 @@ export const metadata = {
 }
 
 export default async function ProductsPage() {
-  const products = await fetchAllProducts()
+  const products = await fetchAllProductCards()
 
   return (
     <main className="min-h-screen">
@@ -44,7 +44,7 @@ export default async function ProductsPage() {
               <Link key={p.slug} href={`/product/${p.slug}`} className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden bg-[var(--color-plate)] mb-4">
                   <Image
-                    src={productHero(p)}
+                    src={p.image}
                     alt={p.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
