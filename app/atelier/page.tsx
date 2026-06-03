@@ -8,36 +8,45 @@ export const metadata = {
   description: "A small workshop in the Marrakech medina — seven artisans, fourteen days per piece.",
 }
 
+// /atelier tells the PLACE story (city → workshop → object → carrier).
+// Homepage Craftsmanship section already shows the PROCESS (Cut/Stitch/Finish),
+// so every image here is UNIQUE — none repeats a homepage shot.
 const SLIDES = [
   {
     title: "Marrakech",
     body: "A small workshop behind a ryad door. Seven artisans, no machines, no apprentices learning on the customer's piece.",
     image: "/tanneurs/lifestyle/teal-ryad.webp",
+    alt: "Woman walking through a teal-tiled Moorish ryad courtyard, carrying a Maison Tanneurs bag",
   },
   {
     title: "The Hides",
     body: "Full-grain bovine sourced from Mediterranean herds. Selected at the tannery for grain consistency and weight.",
-    image: "/tanneurs/atelier/leather-table-2.webp",
+    image: "/tanneurs/atelier/leather-workbench.webp",
+    alt: "Stacks of leather laid out across the atelier workbench",
   },
   {
-    title: "The Cut",
-    body: "Patterns drawn by hand, cut from the hide. Every panel inspected before it joins another.",
-    image: "/tanneurs/atelier/cut-leather-table.webp",
-  },
-  {
-    title: "The Stitch",
-    body: "Saddle-stitched with waxed linen thread. Two needles, every stitch by hand. Nothing machine-sewn.",
-    image: "/tanneurs/atelier/stitch-hands.webp",
-  },
-  {
-    title: "The Atelier",
-    body: "Fourteen days from hide to final stitch. Light falls through the courtyard, the workshop runs on its own quiet rhythm.",
+    title: "The Workshop",
+    body: "Light falls through the courtyard, the workshop runs on its own quiet rhythm. Fourteen days, every piece.",
     image: "/tanneurs/atelier/wide-scene.webp",
+    alt: "Wide interior of the Marrakech atelier",
+  },
+  {
+    title: "The Boutique",
+    body: "A single room in the medina, opened to the morning light. Where the piece meets its first carrier.",
+    image: "/tanneurs/atelier/boutique-wide.webp",
+    alt: "The Maison Tanneurs boutique — wide morning shot",
   },
   {
     title: "The Object",
     body: "Numbered inside the lining. Never restocked. Made to outlive whoever first carries it.",
-    image: "/tanneurs/atelier/finish-atelier.webp",
+    image: "/tanneurs/atelier/bag-courtyard.webp",
+    alt: "Finished Maison Tanneurs bag placed in a Marrakech courtyard",
+  },
+  {
+    title: "The Carrier",
+    body: "Across the medina, across the dunes, across decades. The piece takes the imprint of its years.",
+    image: "/tanneurs/lifestyle/white-ryad.webp",
+    alt: "Model in cream linen walking through a chalk-arched ryad with a cognac leather bag",
   },
 ]
 
@@ -46,11 +55,13 @@ export default function AtelierPage() {
     <main className="min-h-screen">
       <Navigation />
 
+      {/* /atelier opener — distinct from homepage §4 (hands-at-work).
+          Uses the cinematic zigzag-tote reveal — product-becoming-object. */}
       <EditorialFilm
-        src="/tanneurs/cinema/hands-at-work.mp4"
-        poster="/tanneurs/cinema/hands-at-work.webp"
-        alt="Macro of artisan hands saddle-stitching with brass awl"
-        pullQuote="Two needles. Every stitch by hand. Nothing machine-sewn."
+        src="/tanneurs/cinema/medina-zigzag-reveal.mp4"
+        poster="/tanneurs/cinema/medina-zigzag-reveal.webp"
+        alt="Cinematic reveal — Maison Tanneurs Medina Zigzag Tote"
+        pullQuote="Fourteen days from hide to final stitch."
         attribution="The Atelier · Marrakech"
         height="tall"
         navTheme="light"
@@ -79,7 +90,7 @@ export default function AtelierPage() {
                 <div className="lg:col-span-7 relative aspect-[4/3] overflow-hidden bg-[var(--color-plate)]">
                   <Image
                     src={s.image}
-                    alt={s.title}
+                    alt={s.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 58vw"
                     loading={i === 0 ? "eager" : "lazy"}

@@ -7,22 +7,22 @@ const STEPS = [
     numeral: "I",
     label: "Cut",
     body: "Patterns drawn by hand. Every panel inspected before it joins another.",
-    image: "/tanneurs/atelier/cut-leather-table.webp",
+    image: "/tanneurs/atelier/craftsmanship-cut.webp",
     alt: "Leather cut by hand on the atelier workbench",
   },
   {
     numeral: "II",
     label: "Stitch",
     body: "Saddle-stitched in waxed linen. Two needles, every seam by hand.",
-    image: "/tanneurs/atelier/stitch-hands.webp",
+    image: "/tanneurs/atelier/craftsmanship-stitch.webp",
     alt: "Artisan hands saddle-stitching with brass awl",
   },
   {
     numeral: "III",
     label: "Finish",
     body: "Edges burnished, hardware set, lining laid. The piece is numbered.",
-    image: "/tanneurs/atelier/finish-atelier.webp",
-    alt: "Finished cognac leather bag in the Marrakech atelier",
+    image: "/tanneurs/atelier/craftsmanship-finish.webp",
+    alt: "Finished cognac leather bag — edge-burnished and numbered",
   },
 ]
 

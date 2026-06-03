@@ -43,6 +43,41 @@ const PUBLISHED_STATUSES = new Set(["available", "reserved"])
 
 const FULL_COLS = "id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials"
 
+// Curated hero set — Drive's `usable product pics/<slug>/Hero-*.png`
+// re-encoded into /public/tanneurs/products/<slug>.webp via
+// scripts/encode-product-heroes.py. Wins over Supabase's flat pdp-white
+// shot on grids + PDPs.
+const HERO_OVERRIDES: Set<string> = new Set([
+  "atlas-briefcase-vintage",
+  "atlas-field-briefcase",
+  "atlas-kilim-duffle",
+  "atlas-kilim-rucksack",
+  "atlas-messenger-laptop",
+  "atlas-weekender-cognac",
+  "classic-cognac-satchel",
+  "cognac-brogue-backpack",
+  "expedition-rolltop-cognac",
+  "expedition-rolltop-noir",
+  "explorer-rolltop-cognac",
+  "heritage-rucksack",
+  "marrakech-tote-cognac",
+  "medina-cargo-rucksack-cognac",
+  "medina-crossbody-clasp-teal",
+  "medina-crossbody-cognac",
+  "medina-crossbody-envelope",
+  "medina-crossbody-tooled-walnut",
+  "medina-duffle",
+  "medina-market-tote-cognac",
+  "medina-rucksack-drawstring",
+  "medina-rucksack-flap-chocolate",
+  "medina-saddlebag-tooled-cognac",
+  "medina-zigzag-tote-chocolate",
+  "oasis-weekender-oxblood",
+  "vintage-buckle-backpack",
+  "vintage-satchel-light-brown",
+  "woven-leather-backpack",
+])
+
 export async function fetchAllProducts(): Promise<Product[]> {
   const sb = getClient()
   if (!sb) return []
@@ -85,7 +120,11 @@ export async function fetchAllProductCards(): Promise<ProductCard[]> {
       price: p.price,
       featured: p.featured,
       status: p.status,
-      image: (p.images && p.images[0]) || "/placeholder.svg",
+      // Cards use the curated Drive Hero when available — same source-of-truth
+      // as productHero() — otherwise fall back to Supabase pdp-white.
+      image: HERO_OVERRIDES.has(p.slug)
+        ? `/tanneurs/products/${p.slug}.webp`
+        : (p.images && p.images[0]) || "/placeholder.svg",
     }))
 }
 
@@ -121,8 +160,8 @@ export async function fetchFeaturedProducts(limit = 6): Promise<Product[]> {
   return (data as Product[]).filter((p) => !HIDDEN_SKUS.has(p.slug))
 }
 
-// Every SKU has `<slug>-pdp-white.webp` as images[0] (canonical plate shot).
 export function productHero(p: Product): string {
+  if (HERO_OVERRIDES.has(p.slug)) return `/tanneurs/products/${p.slug}.webp`
   return p.images?.[0] || "/placeholder.svg"
 }
 

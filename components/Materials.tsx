@@ -17,8 +17,10 @@ const MATERIALS = [
   {
     label: "Waxed linen thread",
     body: "Hand-laid two-needle saddle stitch. Slower than machine. Each seam crosses the next, locking the panel. The stitch outlives the bag.",
+    // Macro of a tooled crossbody — shows the saddle-stitch in product context,
+    // distinct from the brass-awl scene used in Craftsmanship/Stitch.
     image: "/tanneurs/materials/waxed-linen.webp",
-    alt: "Hands saddle-stitching with waxed linen thread",
+    alt: "Saddle-stitched detail on a tooled walnut crossbody",
   },
 ]
 
