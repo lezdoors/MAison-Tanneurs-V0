@@ -11,10 +11,15 @@ type Slide = {
   chapter: string
   caption: string
   duration: number
+  /** object-position on desktop (≥768px). Defaults to "center center". */
+  focal?: string
+  /** object-position on mobile portrait. Defaults to focal or "center center". */
+  mobileFocal?: string
 }
 
 // Three-beat editorial hero (assets chosen by Ryan, 2026-06-03).
-// Two stills + one video — desert, generated-loop, Berber.
+// Two stills + one video — desert, generated-loop, Berber. Focal points
+// keep the model/subject visible from 360px portrait to 4K landscape.
 const SLIDES: Slide[] = [
   {
     kind: "still",
@@ -24,6 +29,8 @@ const SLIDES: Slide[] = [
     chapter: "Across the Sand",
     caption: "Cream linen, cognac leather — the contrast our register is built on.",
     duration: 7400,
+    focal: "60% center",     // model sits center-right; pull her into view on wide
+    mobileFocal: "55% 35%",  // portrait: keep her head + bag in frame
   },
   {
     kind: "video",
@@ -34,6 +41,8 @@ const SLIDES: Slide[] = [
     chapter: "The Object, Carried",
     caption: "Filmed on location — the piece, the place, the same fourteen-day rhythm.",
     duration: 9200,
+    focal: "center center",
+    mobileFocal: "center 40%",
   },
   {
     kind: "still",
@@ -43,6 +52,8 @@ const SLIDES: Slide[] = [
     chapter: "Of the Land",
     caption: "Hand-stitched in Marrakech. Hands that know the leather they cross.",
     duration: 7400,
+    focal: "center 45%",
+    mobileFocal: "center 40%",
   },
 ]
 
@@ -51,9 +62,17 @@ const FADE_MS = 900
 export function HeroCarousel() {
   const [i, setI] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    setMounted(true)
+    const mq = window.matchMedia("(max-width: 767px)")
+    setIsMobile(mq.matches)
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
+  }, [])
 
   useEffect(() => {
     if (!mounted) return
@@ -78,12 +97,13 @@ export function HeroCarousel() {
   return (
     <section
       data-nav-theme="light"
-      className="relative w-full h-screen min-h-[640px] max-h-[920px] overflow-hidden bg-[var(--color-warm-black)]"
+      className="relative w-full h-[100svh] min-h-[560px] max-h-[920px] overflow-hidden bg-[var(--color-warm-black)]"
       aria-label="Maison Tanneurs — opening film"
     >
       {SLIDES.map((s, idx) => {
         const isActive = idx === i
         const isStill = s.kind === "still"
+        const objectPos = (isMobile ? s.mobileFocal : s.focal) || s.focal || "center center"
         return (
           <div
             key={idx}
@@ -97,11 +117,17 @@ export function HeroCarousel() {
                 alt={s.alt}
                 loading={idx === 0 ? "eager" : "lazy"}
                 className={`absolute inset-0 w-full h-full object-cover ${isActive ? "hero-kenburns" : ""}`}
-                style={{ animationPlayState: isActive ? "running" : "paused" }}
+                style={{ animationPlayState: isActive ? "running" : "paused", objectPosition: objectPos }}
               />
             ) : (
               <>
-                <img src={s.poster!} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
+                <img
+                  src={s.poster!}
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ objectPosition: objectPos }}
+                />
                 <video
                   ref={(el) => { videoRefs.current[idx] = el }}
                   autoPlay={idx === 0}
@@ -111,6 +137,7 @@ export function HeroCarousel() {
                   poster={s.poster}
                   preload={idx === 0 ? "auto" : "metadata"}
                   className="absolute inset-0 w-full h-full object-cover"
+                  style={{ objectPosition: objectPos }}
                 >
                   <source src={s.src} type="video/mp4" />
                 </video>
@@ -120,28 +147,44 @@ export function HeroCarousel() {
         )
       })}
 
-      {/* Scrim — softens copy at the bottom edge */}
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/45 via-black/15 to-transparent pointer-events-none z-[3]" />
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent pointer-events-none z-[3]" />
+      {/* ─── Top scrim — guarantees nav contrast on any image ─── */}
+      <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/60 via-black/25 to-transparent pointer-events-none z-[3]" />
 
-      {/* Bottom-left chapter title */}
-      <div className="absolute bottom-12 lg:bottom-20 left-6 lg:left-10 right-6 z-[5] text-[var(--color-ivory)] max-w-3xl">
+      {/* ─── Bottom scrim — left-weighted so headline always reads,
+              regardless of which side of the image the subject is on ─── */}
+      <div className="absolute inset-0 pointer-events-none z-[3]"
+           style={{
+             background:
+               "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 28%, rgba(0,0,0,0.05) 55%, transparent 70%)",
+           }} />
+      <div className="absolute inset-y-0 left-0 w-full md:w-2/3 lg:w-1/2 pointer-events-none z-[3]"
+           style={{
+             background:
+               "linear-gradient(to right, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.10) 60%, transparent 100%)",
+           }} />
+
+      {/* ─── Bottom-left chapter title (text-shadow as belt-and-suspenders) ─── */}
+      <div
+        className="absolute bottom-10 lg:bottom-20 left-6 lg:left-10 right-6 z-[5] text-[var(--color-ivory)] max-w-3xl"
+        style={{ textShadow: "0 2px 24px rgba(0,0,0,0.45)" }}
+      >
         <div className="flex items-baseline gap-4 mb-4">
           <span className="font-display text-2xl text-[var(--color-ivory-soft)]">{active.numeral}</span>
           <span className="tech-label tech-label--ondark">Vol. I · Marrakech</span>
         </div>
-        <h1 className="font-display text-[clamp(36px,6vw,84px)] leading-[1.05] tracking-[-0.01em] text-balance">
+        <h1 className="font-display text-[clamp(32px,5.6vw,80px)] leading-[1.05] tracking-[-0.01em] text-balance">
           Hand-stitched in Marrakech.
           <br />
           Numbered, never restocked.
         </h1>
-        <p className="mt-6 max-w-xl text-sm lg:text-base text-[var(--color-ivory-soft)] leading-relaxed">
+        <p className="mt-5 max-w-xl text-[13px] lg:text-base text-[var(--color-ivory-soft)] leading-relaxed">
           {active.chapter} — {active.caption}
         </p>
       </div>
 
-      {/* Bottom-right progress chips */}
-      <div className="absolute bottom-12 lg:bottom-20 right-6 lg:right-10 z-[5] hidden md:flex items-center gap-3 text-[var(--color-ivory)]">
+      {/* ─── Bottom-right progress chips ─── */}
+      <div className="absolute bottom-10 lg:bottom-20 right-6 lg:right-10 z-[5] hidden md:flex items-center gap-3 text-[var(--color-ivory)]"
+           style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}>
         <span className="text-xs tracking-[0.22em] tabular-nums">{String(i + 1).padStart(2, "0")}</span>
         <span className="w-12 h-px bg-[var(--color-rule-on-dark)]" />
         <span className="text-xs tracking-[0.22em] tabular-nums text-[var(--color-ivory-soft)]">{String(SLIDES.length).padStart(2, "0")}</span>

@@ -22,8 +22,9 @@ export function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
-  // Sample the section under the nav (y=48) and use its data-nav-theme to pick
-  // header colours. Hero sections declare data-nav-theme="light".
+  // Sample the section currently behind the nav (y=48) and use its
+  // data-nav-theme attribute to pick header colours. Hero/dark sections
+  // declare data-nav-theme="light"; paper/light sections declare "dark".
   useEffect(() => {
     const update = () => {
       setScrolled(window.scrollY > 24)
@@ -56,26 +57,36 @@ export function Navigation() {
 
   const isLight = theme === "light"
   const fg = isLight ? "text-[var(--color-ivory)]" : "text-[var(--color-ink)]"
-  const fgSoft = isLight ? "text-[var(--color-ivory-soft)]" : "text-[var(--color-ink-muted)]"
   const border = isLight ? "border-[var(--color-rule-on-dark)]" : "border-[var(--color-rule)]"
+  // text-shadow keeps the wordmark + links legible over any photo / video
+  // beneath the section's own scrim. No-op on light (dark text) sections.
+  const txtShadow = isLight ? "0 1px 14px rgba(0,0,0,0.55)" : "none"
 
   return (
     <>
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-[background,backdrop-filter,border-color] duration-500 ${
-          scrolled ? (isLight ? "bg-[var(--color-warm-black)]/55 backdrop-blur-md" : "bg-[var(--color-paper)]/85 backdrop-blur-md border-b border-[var(--color-rule)]") : ""
+          scrolled
+            ? isLight
+              ? "bg-[var(--color-warm-black)]/65 backdrop-blur-md"
+              : "bg-[var(--color-paper)]/90 backdrop-blur-md border-b border-[var(--color-rule)]"
+            : ""
         }`}
       >
-        <nav className="max-w-[1400px] mx-auto px-6 lg:px-10 h-16 lg:h-20 flex items-center justify-between">
+        <nav className="max-w-[1400px] mx-auto px-5 sm:px-6 lg:px-10 h-16 lg:h-20 flex items-center justify-between gap-3">
           <button
             onClick={() => setOpen(true)}
             aria-label="Open menu"
             className={`lg:hidden p-2 -ml-2 ${fg}`}
+            style={{ textShadow: txtShadow }}
           >
             <Menu className="h-5 w-5 stroke-[1.5]" />
           </button>
 
-          <ul className={`hidden lg:flex items-center gap-10 text-[11px] tracking-[0.28em] uppercase ${fg}`}>
+          <ul
+            className={`hidden lg:flex items-center gap-8 xl:gap-10 text-[11px] tracking-[0.28em] uppercase ${fg}`}
+            style={{ textShadow: txtShadow }}
+          >
             {NAV.map((l) => (
               <li key={l.href}>
                 <Link
@@ -88,17 +99,23 @@ export function Navigation() {
             ))}
           </ul>
 
-          <Link href="/" aria-label="Maison Tanneurs — home" className={`font-display text-lg lg:text-xl tracking-[0.18em] ${fg}`}>
+          <Link
+            href="/"
+            aria-label="Maison Tanneurs — home"
+            className={`font-display text-base sm:text-lg lg:text-xl tracking-[0.16em] sm:tracking-[0.18em] whitespace-nowrap ${fg}`}
+            style={{ textShadow: txtShadow }}
+          >
             MAISON TANNEURS
           </Link>
 
           <a
             href={RESERVE_MAILTO}
-            className={`hidden sm:inline-flex text-[10px] tracking-[0.32em] uppercase px-4 py-2 border ${border} ${fg} hover:bg-[var(--color-ink)] hover:text-[var(--color-ivory)] hover:border-[var(--color-ink)] transition-colors`}
+            className={`hidden sm:inline-flex text-[10px] tracking-[0.28em] sm:tracking-[0.32em] uppercase px-3 sm:px-4 py-2 border ${border} ${fg} hover:bg-[var(--color-ink)] hover:text-[var(--color-ivory)] hover:border-[var(--color-ink)] transition-colors`}
+            style={{ textShadow: txtShadow }}
           >
             Reserve
           </a>
-          <span className="sm:hidden w-9" />
+          <span className="sm:hidden w-9" aria-hidden />
         </nav>
       </header>
 

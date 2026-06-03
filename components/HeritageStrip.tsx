@@ -2,8 +2,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 // Wide editorial band — single lifestyle image, single pull quote, link to /heritage.
-// Lavender field setting per Ryan's "model + tennis + field" mix; tennis already
-// appears in the LifestyleTriptych above, so the field shot leads here.
+// Lavender field setting per Ryan's "model + tennis + field" mix.
+// Object-position keeps the model visible on every screen size.
 export function HeritageStrip() {
   return (
     <section
@@ -17,12 +17,17 @@ export function HeritageStrip() {
         fill
         sizes="100vw"
         loading="lazy"
-        className="object-cover"
+        className="object-cover object-[60%_center] md:object-[center_45%]"
       />
-      <div className="absolute inset-0 bg-[var(--color-warm-black)]/55" />
+      <div className="absolute inset-0 bg-[var(--color-warm-black)]/60" />
+      {/* Top scrim — keeps nav legible above this section */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/55 via-black/20 to-transparent pointer-events-none" />
 
       <div className="relative z-10 h-full flex items-center justify-center px-6 lg:px-10 text-center">
-        <div className="max-w-2xl text-[var(--color-ivory)]">
+        <div
+          className="max-w-2xl text-[var(--color-ivory)]"
+          style={{ textShadow: "0 2px 18px rgba(0,0,0,0.45)" }}
+        >
           <span className="tech-label tech-label--ondark block mb-6">§08 · Heritage</span>
           <h2 className="font-display text-[clamp(28px,4vw,52px)] leading-[1.15] tracking-[-0.005em] text-balance mb-6">
             Hand-stitched in Marrakech. Carried everywhere.
