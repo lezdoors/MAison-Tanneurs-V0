@@ -38,7 +38,18 @@ export type Product = {
   updated_at: string
 }
 
-const HIDDEN_SKUS = new Set<string>(["test-e2e"])
+const HIDDEN_SKUS = new Set<string>([
+  "test-e2e",
+  // Placeholder/legacy SKUs with no curated Drive Hero — they leak into
+  // /products as supplier-flat pdp-white shots and break the editorial
+  // consistency. Re-enable per-slug only after they get a Hero in Drive.
+  "rolltop-daypack",            // 0 images — totally broken
+  "black-stitched-backpack",    // 5 supplier shots only, no editorial
+  "marrakech-tote-bordeaux",    // 1 placeholder shot
+  "marrakech-tote-noir",        // 1 placeholder shot
+  "medina-crossbody-tassel",    // 1 placeholder shot
+  "explorer-rolltop-noir",      // 9 shots but no Drive Hero curated
+])
 const PUBLISHED_STATUSES = new Set(["available", "reserved"])
 
 const FULL_COLS = "id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials"

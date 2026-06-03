@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://maison-tanneurs.local/sitemap.xml
+Sitemap: https://maison-tanneurs-v0.vercel.app/sitemap.xml
