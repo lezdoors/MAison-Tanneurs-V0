@@ -16,7 +16,7 @@ import subprocess
 from pathlib import Path
 
 DRIVE = Path("/Users/lezdoors/Library/CloudStorage/GoogleDrive-ryanaoufal@gmail.com/My Drive/Maison Tanneurs")
-REPO = Path("/Users/lezdoors/maison-tanneurs-rocco/public/tanneurs")
+REPO = Path("/Users/lezdoors/MAison-Tanneurs-V0/public/tanneurs")
 
 # (drive_relpath, target_path, max_w, quality)
 ASSETS = [
