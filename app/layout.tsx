@@ -6,7 +6,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maison-tanneurs-rocco.vercel.app"
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maison-tanneurs-v0.vercel.app"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
