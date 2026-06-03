@@ -18,8 +18,13 @@ type Slide = {
 }
 
 // Three-beat editorial hero (assets chosen by Ryan, 2026-06-03).
-// Two stills + one video — desert, generated-loop, Berber. Focal points
-// keep the model/subject visible from 360px portrait to 4K landscape.
+// Focal points keep the SUBJECT — model + leather bag, Berber figure +
+// bag — in frame from 360px portrait to ultra-wide cinema 21:9.
+//
+// Source images are 1.78:1; on hero boxes wider than that (any normal
+// desktop), object-cover scales to fill width and crops top+bottom.
+// Per-slide focal moves the crop window so the bag (the product, the
+// point) never disappears off the bottom edge.
 const SLIDES: Slide[] = [
   {
     kind: "still",
@@ -29,8 +34,8 @@ const SLIDES: Slide[] = [
     chapter: "Across the Sand",
     caption: "Cream linen, cognac leather — the contrast our register is built on.",
     duration: 7400,
-    focal: "60% center",     // model sits center-right; pull her into view on wide
-    mobileFocal: "55% 35%",  // portrait: keep her head + bag in frame
+    focal: "center 68%",       // pull crop DOWN so the bag at hip-level stays visible
+    mobileFocal: "55% 62%",
   },
   {
     kind: "video",
@@ -41,8 +46,8 @@ const SLIDES: Slide[] = [
     chapter: "The Object, Carried",
     caption: "Filmed on location — the piece, the place, the same fourteen-day rhythm.",
     duration: 9200,
-    focal: "center center",
-    mobileFocal: "center 40%",
+    focal: "center 55%",       // slight downward bias — bag is centre-low in frame
+    mobileFocal: "center 50%",
   },
   {
     kind: "still",
@@ -52,8 +57,8 @@ const SLIDES: Slide[] = [
     chapter: "Of the Land",
     caption: "Hand-stitched in Marrakech. Hands that know the leather they cross.",
     duration: 7400,
-    focal: "center 45%",
-    mobileFocal: "center 40%",
+    focal: "65% 55%",          // Berber sits right-of-centre; nudge crop right
+    mobileFocal: "60% 50%",
   },
 ]
 
@@ -97,7 +102,10 @@ export function HeroCarousel() {
   return (
     <section
       data-nav-theme="light"
-      className="relative w-full h-[100svh] min-h-[560px] max-h-[920px] overflow-hidden bg-[var(--color-warm-black)]"
+      // Full viewport height — no max-h cap. On 4K displays this means a true
+      // 100svh cinema; on laptops it still fills. min-h-[680] guarantees a
+      // strong above-the-fold presence on shorter portrait windows.
+      className="relative w-full h-[100svh] min-h-[680px] overflow-hidden bg-[var(--color-warm-black)]"
       aria-label="Maison Tanneurs — opening film"
     >
       {SLIDES.map((s, idx) => {
