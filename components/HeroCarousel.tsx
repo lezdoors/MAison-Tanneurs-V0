@@ -9,44 +9,40 @@ type Slide = {
   alt: string
   numeral: string
   chapter: string
+  caption: string
   duration: number
 }
 
-// Four-beat editorial hero — three stills + one video. Numerals as chapter
-// markers (I–IV). Duration is per slide; video starts/restarts on becoming active.
+// Three-beat editorial hero (assets chosen by Ryan, 2026-06-03).
+// Two stills + one video — desert, generated-loop, Berber.
 const SLIDES: Slide[] = [
   {
     kind: "still",
-    src: "/tanneurs/hero/hero-bag-rocks.webp",
-    alt: "Cognac leather bag on hewn stone in a chalk-rose ryad with carved Moorish arches",
+    src: "/tanneurs/hero/dune-white-bag.webp",
+    alt: "Woman in cream linen on a Saharan dune ridge, carrying a Maison Tanneurs leather bag",
     numeral: "I",
-    chapter: "Quietly Built",
-    duration: 7000,
+    chapter: "Across the Sand",
+    caption: "Cream linen, cognac leather — the contrast our register is built on.",
+    duration: 7400,
   },
   {
     kind: "video",
-    src: "/tanneurs/cinema/model-dune-walk.mp4",
-    poster: "/tanneurs/cinema/model-dune-walk.webp",
-    alt: "Woman in cream linen walking across Saharan dunes, cognac bag in hand",
+    src: "/tanneurs/hero/dune-video.mp4",
+    poster: "/tanneurs/hero/dune-video.webp",
+    alt: "Cinematic loop — Maison Tanneurs object in the Moroccan desert",
     numeral: "II",
-    chapter: "Across the Sand",
-    duration: 8400,
+    chapter: "The Object, Carried",
+    caption: "Filmed on location — the piece, the place, the same fourteen-day rhythm.",
+    duration: 9200,
   },
   {
     kind: "still",
-    src: "/tanneurs/hero/hero-white-ryad.webp",
-    alt: "Woman walking through a chalk-arched Moorish ryad",
+    src: "/tanneurs/hero/berber-dunes-bag.webp",
+    alt: "Berber figure walking the Saharan dunes carrying a Maison Tanneurs bag",
     numeral: "III",
-    chapter: "A Ryad in the Medina",
-    duration: 7000,
-  },
-  {
-    kind: "still",
-    src: "/tanneurs/hero/hero-blonde-sunset.webp",
-    alt: "Cognac leather duffle on a Moroccan rooftop at golden hour",
-    numeral: "IV",
-    chapter: "Golden Hour",
-    duration: 7000,
+    chapter: "Of the Land",
+    caption: "Hand-stitched in Marrakech. Hands that know the leather they cross.",
+    duration: 7400,
   },
 ]
 
@@ -140,7 +136,7 @@ export function HeroCarousel() {
           Numbered, never restocked.
         </h1>
         <p className="mt-6 max-w-xl text-sm lg:text-base text-[var(--color-ivory-soft)] leading-relaxed">
-          {active.chapter} — full-grain leather, solid brass, waxed linen thread. Fourteen days from hide to final stitch.
+          {active.chapter} — {active.caption}
         </p>
       </div>
 

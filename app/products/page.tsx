@@ -20,9 +20,9 @@ export default async function ProductsPage() {
       <Navigation />
 
       <EditorialFilm
-        src="/tanneurs/cinema/berber-dunes.mp4"
-        poster="/tanneurs/cinema/berber-dunes-poster.webp"
-        alt="Berber figure in the Saharan dunes at golden hour"
+        src="/tanneurs/cinema/model-desert.mp4"
+        poster="/tanneurs/cinema/night-desert.webp"
+        alt="Model in cream linen across the Moroccan desert at night"
         height="tall"
         navTheme="light"
       />

@@ -42,7 +42,7 @@ export default function HeritagePage() {
 
       <EditorialFilm
         src="/tanneurs/cinema/berber-dunes.mp4"
-        poster="/tanneurs/cinema/berber-dunes-poster.webp"
+        poster="/tanneurs/hero/berber-dunes-bag.webp"
         alt="Berber figure on Saharan dune ridge at sunrise"
         pullQuote="Hand-stitched in Marrakech. Carried everywhere."
         attribution="Heritage · Vol. I"

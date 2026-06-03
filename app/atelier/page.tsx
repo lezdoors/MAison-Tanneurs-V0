@@ -17,7 +17,7 @@ const SLIDES = [
   {
     title: "The Hides",
     body: "Full-grain bovine sourced from Mediterranean herds. Selected at the tannery for grain consistency and weight.",
-    image: "/tanneurs/materials/full-grain.webp",
+    image: "/tanneurs/atelier/leather-table-2.webp",
   },
   {
     title: "The Cut",
@@ -32,7 +32,7 @@ const SLIDES = [
   {
     title: "The Atelier",
     body: "Fourteen days from hide to final stitch. Light falls through the courtyard, the workshop runs on its own quiet rhythm.",
-    image: "/tanneurs/atelier/boutique-wide.webp",
+    image: "/tanneurs/atelier/wide-scene.webp",
   },
   {
     title: "The Object",

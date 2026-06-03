@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 
-// Quiet heritage band — one image, one pull quote, link to /heritage.
-// No stat counters (that's the v0 template smell).
+// Wide editorial band — single lifestyle image, single pull quote, link to /heritage.
+// Lavender field setting per Ryan's "model + tennis + field" mix; tennis already
+// appears in the LifestyleTriptych above, so the field shot leads here.
 export function HeritageStrip() {
   return (
     <section
@@ -11,8 +12,8 @@ export function HeritageStrip() {
       aria-label="Heritage"
     >
       <Image
-        src="/tanneurs/atelier/boutique-wide.webp"
-        alt="Maison Tanneurs atelier in Marrakech — light beams through arched windows, artisans at work"
+        src="/tanneurs/lifestyle/lavender-field.webp"
+        alt="Woman in cream linen walking through a lavender field with a Maison Tanneurs leather bag"
         fill
         sizes="100vw"
         loading="lazy"

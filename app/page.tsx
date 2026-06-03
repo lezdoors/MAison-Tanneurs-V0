@@ -2,6 +2,7 @@ import { Navigation } from "@/components/Navigation"
 import { HeroCarousel } from "@/components/HeroCarousel"
 import { ObjectOfTheEdition } from "@/components/ObjectOfTheEdition"
 import { FeaturedEdition } from "@/components/FeaturedEdition"
+import { LifestyleTriptych } from "@/components/LifestyleTriptych"
 import { EditorialFilm } from "@/components/EditorialFilm"
 import { Craftsmanship } from "@/components/Craftsmanship"
 import { BatchGuarantee } from "@/components/BatchGuarantee"
@@ -22,7 +23,7 @@ export default async function Home() {
     <main className="min-h-screen">
       <Navigation />
 
-      {/* §1 — Cinematic 4-beat hero */}
+      {/* §1 — Cinematic 3-beat hero (Ryan's chosen assets) */}
       <HeroCarousel />
 
       {/* §2 — One hero object */}
@@ -30,6 +31,9 @@ export default async function Home() {
 
       {/* §3 — Three from the Edition */}
       <FeaturedEdition products={three} />
+
+      {/* §3.5 — Mixed lifestyle: tennis · olive grove · dunes */}
+      <LifestyleTriptych />
 
       {/* §4 — Editorial film opens the process chapter */}
       <EditorialFilm
@@ -51,7 +55,7 @@ export default async function Home() {
       {/* §7 — Materials */}
       <Materials />
 
-      {/* §8 — Heritage strip */}
+      {/* §8 — Heritage strip (lavender field) */}
       <HeritageStrip />
 
       {/* §9 — Newsletter */}
