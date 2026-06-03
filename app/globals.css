@@ -1,21 +1,30 @@
 @import "tailwindcss";
 
+/* ============================================================
+   MAISON TANNEURS — Type system
+
+   One family: Fraunces (variable, OFL via Google Fonts source).
+   Self-hosted at /fonts/fraunces/ — no Google CDN dependency.
+
+   The variable font carries weight 100–900 and optical sizing
+   9–144. Everything on the site is built from this one family
+   using weight + optical-sizing + size multipliers (Type Scale
+   below) — no second display face, no Inter, no fallbacks
+   beyond system serif.
+   ============================================================ */
+
 @font-face {
-  font-family: "Switzer";
-  src: url("/fonts/switzer/Switzer-Variable.woff2") format("woff2");
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces/Fraunces-VariableFont.woff2") format("woff2-variations"),
+       url("/fonts/fraunces/Fraunces-VariableFont.woff2") format("woff2");
   font-weight: 100 900;
+  font-stretch: 75% 125%;
   font-style: normal;
   font-display: swap;
 }
 
 @theme {
-  /* ============================================================
-     MAISON TANNEURS — Polène-tier warm-neutral palette.
-     Paper-white surfaces, warm charcoal type, cognac as accent
-     only (never as a fill). Never pure #fff / pure #000.
-     Confirmed against eng.polene-paris.com.
-     ============================================================ */
-
+  /* ─── PALETTE — Polène-tier warm neutrals (never pure #fff/#000) ─── */
   --color-white: #ffffff;
   --color-paper: #f8f6f1;
   --color-paper-soft: #efece5;
@@ -39,28 +48,48 @@
   --color-rule-soft: rgba(15, 12, 8, 0.06);
   --color-rule-on-dark: rgba(247, 245, 238, 0.22);
 
-  --font-display: "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
-  --font-sans: "Switzer", "Inter", system-ui, -apple-system, sans-serif;
+  /* ─── TYPE — single family, multipliers do the work ─── */
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-sans:    "Fraunces", "Times New Roman", serif;
+
+  /* Weight multipliers — restrained to 3 weights across the site */
+  --weight-light: 320;
+  --weight-regular: 400;
+  --weight-medium: 520;
 }
 
 html, body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-weight: var(--weight-regular);
+  font-feature-settings: "ss01", "ss02"; /* Fraunces stylistic alternates — soft 'a', '?' */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.font-display { font-family: var(--font-display); }
+/* Display utility — bumps optical-size axis so glyphs feel cut for headline, not body. */
+.font-display {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 96, "SOFT" 30;
+  letter-spacing: -0.012em;
+}
 
-/* Eyebrow / spec labels — small uppercase tracked text used as
-   section markers (§01, MATERIALS, etc.). Bronze on light, ivory on dark. */
+/* Body utility — lower optical-size for reading at 13–17px. */
+.font-body {
+  font-family: var(--font-sans);
+  font-variation-settings: "opsz" 14, "SOFT" 50;
+}
+
+/* Eyebrow / spec labels — small uppercase tracked text used as section
+   markers (§01, MATERIALS, etc.). Bronze on light, ivory on dark. */
 .tech-label {
   font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--color-bronze);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
+  font-variation-settings: "opsz" 14;
 }
 .tech-label--ondark { color: var(--color-bronze-on-dark); }
 
@@ -69,6 +98,7 @@ html, body {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-ink-muted);
+  font-weight: var(--weight-medium);
 }
 
 /* Hero Ken-Burns drift used by HeroCarousel. */

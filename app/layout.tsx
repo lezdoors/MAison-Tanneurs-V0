@@ -1,10 +1,6 @@
 import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maison-tanneurs-v0.vercel.app"
 
@@ -46,8 +42,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="antialiased">
+    <html lang="en">
+      <head>
+        {/* Preload the variable font so the first paint uses Fraunces, not the system serif. */}
+        <link
+          rel="preload"
+          href="/fonts/fraunces/Fraunces-VariableFont.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className="antialiased font-body">
         {children}
         <Analytics />
       </body>

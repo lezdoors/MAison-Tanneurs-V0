@@ -1,13 +1,22 @@
-import { createClient } from "@supabase/supabase-js"
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-// Server-only key. All product reads happen in RSCs (no client fetching in reserve-mode),
-// so we use the service role and never ship a client-side anon key.
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+// Lazy-init so a missing env var (e.g. on first deploy before vars are wired)
+// doesn't crash the build at module-load. fetch* helpers degrade to [] / null.
+let _client: SupabaseClient | null = null
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
-  auth: { persistSession: false },
-})
+function getClient(): SupabaseClient | null {
+  if (_client) return _client
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) {
+    if (typeof window === "undefined") {
+      console.warn("[supabase] missing NEXT_PUBLIC_SUPABASE_URL or service-role key — product reads will return empty")
+    }
+    return null
+  }
+  _client = createClient(url, key, { auth: { persistSession: false } })
+  return _client
+}
 
 export type Product = {
   id: string
@@ -32,15 +41,19 @@ export type Product = {
 const HIDDEN_SKUS = new Set<string>(["test-e2e"])
 const PUBLISHED_STATUSES = new Set(["available", "reserved"])
 
+const FULL_COLS = "id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials"
+
 export async function fetchAllProducts(): Promise<Product[]> {
-  const { data, error } = await supabase
+  const sb = getClient()
+  if (!sb) return []
+  const { data } = await sb
     .from("products")
-    .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
+    .select(FULL_COLS)
     .in("status", ["available", "reserved"])
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(100)
-  if (error || !data) return []
+  if (!data) return []
   return (data as Product[]).filter((p) => !HIDDEN_SKUS.has(p.slug) && PUBLISHED_STATUSES.has(p.status))
 }
 
@@ -52,14 +65,16 @@ export type ProductCard = Pick<
 > & { image: string }
 
 export async function fetchAllProductCards(): Promise<ProductCard[]> {
-  const { data, error } = await supabase
+  const sb = getClient()
+  if (!sb) return []
+  const { data } = await sb
     .from("products")
     .select("id,title,slug,category,price,featured,status,images")
     .in("status", ["available", "reserved"])
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(100)
-  if (error || !data) return []
+  if (!data) return []
   return data
     .filter((p) => !HIDDEN_SKUS.has(p.slug) && PUBLISHED_STATUSES.has(p.status))
     .map((p) => ({
@@ -76,27 +91,28 @@ export async function fetchAllProductCards(): Promise<ProductCard[]> {
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
   if (HIDDEN_SKUS.has(slug)) return null
-  const { data, error } = await supabase.from("products").select("*").eq("slug", slug).maybeSingle()
-  if (error || !data) return null
+  const sb = getClient()
+  if (!sb) return null
+  const { data } = await sb.from("products").select("*").eq("slug", slug).maybeSingle()
+  if (!data) return null
   const p = data as Product
   return PUBLISHED_STATUSES.has(p.status) ? p : null
 }
 
 export async function fetchFeaturedProducts(limit = 6): Promise<Product[]> {
-  // Direct query — featured rows only, narrow column list so the RSC payload
-  // doesn't ship every product's 9-image array down to the client.
-  const { data } = await supabase
+  const sb = getClient()
+  if (!sb) return []
+  const { data } = await sb
     .from("products")
-    .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
+    .select(FULL_COLS)
     .in("status", ["available", "reserved"])
     .eq("featured", true)
     .order("created_at", { ascending: false })
     .limit(limit)
   if (!data || data.length === 0) {
-    // Fallback when no rows are flagged featured — first N published.
-    const { data: any2 } = await supabase
+    const { data: any2 } = await sb
       .from("products")
-      .select("id,title,slug,description,price,images,category,status,featured,available_quantity,created_at,updated_at,dimensions,materials")
+      .select(FULL_COLS)
       .in("status", ["available", "reserved"])
       .order("created_at", { ascending: false })
       .limit(limit)
@@ -106,7 +122,6 @@ export async function fetchFeaturedProducts(limit = 6): Promise<Product[]> {
 }
 
 // Every SKU has `<slug>-pdp-white.webp` as images[0] (canonical plate shot).
-// Editorial heroes (lifestyle/atelier framing) ship later as a per-slug manifest.
 export function productHero(p: Product): string {
   return p.images?.[0] || "/placeholder.svg"
 }
@@ -121,8 +136,7 @@ export function formatPrice(cents: number): string {
   return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
 }
 
-// Stable slug → MT-BAG-NNN map (canonical from Airtable, not synced to Supabase yet).
-// Used on PDP to show "Numbered MT-BAG-019" line. Slugs missing here just hide the badge.
+// Stable slug → MT-BAG-NNN map (Airtable canonical IDs, not synced to Supabase).
 const PRODUCT_NUMBERS: Record<string, string> = {
   "atlas-briefcase-vintage": "MT-BAG-001",
   "atlas-field-briefcase": "MT-BAG-002",
