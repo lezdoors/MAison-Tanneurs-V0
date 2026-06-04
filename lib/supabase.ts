@@ -180,12 +180,14 @@ export function productSecondary(p: Product): string {
   return p.images?.[1] || p.images?.[0] || "/placeholder.svg"
 }
 
-// Supabase stores prices in cents. Display in EUR (the luxury default —
-// matches Polène, Hermès, Bleu de Chauffe). Revolut auto-FX-settles to
-// GBP for the Akal merchant account so the customer pays the EUR shown.
+// Display in USD to align with: (a) the Meta catalog feed which is
+// USD-denominated, (b) the USD ad account, (c) main maisontanneurs.com
+// which is also USD. A mismatched display vs ad-catalog currency drops
+// conversion AND can trigger Meta policy flags for misleading pricing.
+// Revolut still auto-FX-settles to GBP on the Akal merchant.
 export function formatPrice(cents: number): string {
-  const eur = cents / 100
-  return `€${eur.toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+  const usd = cents / 100
+  return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
 }
 
 // Stable slug → MT-BAG-NNN map (Airtable canonical IDs, not synced to Supabase).
