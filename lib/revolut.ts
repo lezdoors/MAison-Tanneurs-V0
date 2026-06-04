@@ -46,6 +46,22 @@ export interface CreateOrderInput {
   capture_mode?: "automatic" | "manual"
 }
 
+export interface RevolutCustomer {
+  id?: string
+  email?: string
+  full_name?: string
+  phone?: string
+}
+
+export interface RevolutShippingAddress {
+  street_line_1?: string
+  street_line_2?: string
+  city?: string
+  region?: string
+  postcode?: string
+  country_code?: string
+}
+
 export interface RevolutOrder {
   id: string
   token: string
@@ -56,6 +72,8 @@ export interface RevolutOrder {
   created_at: string
   updated_at: string
   metadata?: Record<string, string>
+  customer?: RevolutCustomer
+  shipping_address?: RevolutShippingAddress
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<RevolutOrder> {

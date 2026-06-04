@@ -68,6 +68,7 @@ export function HeroCarousel() {
   const [i, setI] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
   useEffect(() => {
@@ -76,14 +77,21 @@ export function HeroCarousel() {
     setIsMobile(mq.matches)
     const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
     mq.addEventListener("change", onChange)
-    return () => mq.removeEventListener("change", onChange)
+    const rm = window.matchMedia("(prefers-reduced-motion: reduce)")
+    setReducedMotion(rm.matches)
+    const onRm = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
+    rm.addEventListener("change", onRm)
+    return () => {
+      mq.removeEventListener("change", onChange)
+      rm.removeEventListener("change", onRm)
+    }
   }, [])
 
   useEffect(() => {
-    if (!mounted) return
+    if (!mounted || reducedMotion) return
     const t = setTimeout(() => setI((x) => (x + 1) % SLIDES.length), SLIDES[i].duration)
     return () => clearTimeout(t)
-  }, [i, mounted])
+  }, [i, mounted, reducedMotion])
 
   useEffect(() => {
     videoRefs.current.forEach((v, idx) => {
