@@ -13,7 +13,10 @@ mkdir -p "$OUT" "$HERO_OUT"
 
 # (source-name, dest-path)
 declare -a JOBS=(
-  "you_generated_the_same_video_t.mp4|$HERO_OUT/dune-video.mp4"
+  # HERO slot — Hero-bag-beach-HD is 4K and Ryan-labeled "Hero".
+  # NEVER use loro-video.mp4 (previously you_generated_the_same_video_t.mp4)
+  # — the bag in that frame has a visible Loro Piana logo.
+  "Hero-bag-beach-HD.mp4|$HERO_OUT/hero-loop.mp4"
   "Hands at Work.mp4|$OUT/hands-at-work.mp4"
   "Berber in the dunes.mp4|$OUT/berber-dunes.mp4"
   "Model-white-bag-dune.mp4|$OUT/model-dune-walk.mp4"
@@ -33,15 +36,19 @@ for job in "${JOBS[@]}"; do
   fi
   echo "  cropping  $src_name → $(basename "$dst")"
 
-  # Filter chain:
-  #   crop=in_w*0.92:in_h*0.92 → crop 8% off all sides (centred)
-  #   scale=1280:720           → scale back to 720p
-  # The watermark lives in the bottom-right ~5%; an 8% all-around crop
-  # plus re-centring is safe across all our 1280x720 sources.
+  # Hero loop renders at viewport widths up to 4K, so encode at 1080p +
+  # higher quality. Other clips (editorial breaks, PDP loops) render at
+  # smaller blocks so 720p + tighter compression is fine.
+  if [[ "$dst" == *"/hero-loop.mp4" ]]; then
+    SCALE="1920:1080"; PROFILE="high"; CRF="19"
+  else
+    SCALE="1280:720"; PROFILE="main"; CRF="22"
+  fi
+
   /opt/homebrew/bin/ffmpeg -y -hide_banner -loglevel error \
     -i "$src" \
-    -vf "crop=in_w*0.92:in_h*0.92,scale=1280:720,format=yuv420p" \
-    -c:v libx264 -profile:v main -preset slow -crf 22 -movflags +faststart \
+    -vf "crop=in_w*0.92:in_h*0.92,scale=${SCALE},format=yuv420p" \
+    -c:v libx264 -profile:v "$PROFILE" -preset slow -crf "$CRF" -movflags +faststart \
     -an \
     "$dst"
 

@@ -39,14 +39,14 @@ const SLIDES: Slide[] = [
   },
   {
     kind: "video",
-    src: "/tanneurs/hero/dune-video.mp4",
-    poster: "/tanneurs/hero/dune-video.webp",
-    alt: "Cinematic loop — Maison Tanneurs object in the Moroccan desert",
+    src: "/tanneurs/hero/hero-loop.mp4",
+    poster: "/tanneurs/hero/hero-loop.webp",
+    alt: "Cinematic loop — Maison Tanneurs leather bag at the edge of the sea",
     numeral: "II",
-    chapter: "The Object, Carried",
+    chapter: "At the Edge",
     caption: "Filmed on location — the piece, the place, the same fourteen-day rhythm.",
-    duration: 9200,
-    focal: "center 55%",       // slight downward bias — bag is centre-low in frame
+    duration: 6000,            // source is 5s; loop with 1s fade overlap
+    focal: "center 55%",
     mobileFocal: "center 50%",
   },
   {
