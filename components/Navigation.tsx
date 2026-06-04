@@ -55,6 +55,17 @@ export function Navigation() {
     setOpen(false)
   }, [pathname])
 
+  // Lock body scroll while the mobile menu is open — prevents background
+  // from scrolling under the overlay and avoids the iOS rubber-band bounce.
+  useEffect(() => {
+    if (typeof document === "undefined") return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = open ? "hidden" : prev
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
   const isLight = theme === "light"
   const fg = isLight ? "text-[var(--color-ivory)]" : "text-[var(--color-ink)]"
   const border = isLight ? "border-[var(--color-rule-on-dark)]" : "border-[var(--color-rule)]"
