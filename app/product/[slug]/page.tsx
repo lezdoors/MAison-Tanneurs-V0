@@ -3,6 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Navigation } from "@/components/Navigation"
 import { Footer } from "@/components/Footer"
+import { BuyButton } from "@/components/BuyButton"
 import {
   fetchProductBySlug,
   fetchAllProducts,
@@ -92,19 +93,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </p>
               )}
 
-              <a
-                href={`mailto:hello@maisontanneurs.com?subject=${encodeURIComponent(
-                  `Reserve · ${product.title}`
-                )}&body=${encodeURIComponent(
-                  `I'd like to reserve the ${product.title}${number ? ` (${number})` : ""} at ${formatPrice(product.price)}. Please let me know when the next edition is available and any details I should know about timing or shipping.`
-                )}`}
-                className="block w-full bg-[var(--color-ink)] text-[var(--color-ivory)] hover:bg-[var(--color-warm-black)] text-center px-10 py-5 text-[11px] tracking-[0.32em] uppercase transition-colors"
-              >
-                Reserve This Piece
-              </a>
-              <p className="text-xs text-[var(--color-ink-muted)] leading-relaxed -mt-4">
-                Each piece is numbered and made in limited quantity. Reserve by email — we'll write back with availability and lead time.
-              </p>
+              <BuyButton
+                slug={product.slug}
+                title={product.title}
+                price={product.price}
+                number={number}
+              />
 
               <div>
                 <h2 className="tech-label mb-3">Materials</h2>
