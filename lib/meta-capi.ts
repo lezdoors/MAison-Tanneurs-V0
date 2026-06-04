@@ -63,7 +63,10 @@ export async function sendPurchaseToCAPI(params: PurchaseEvent): Promise<void> {
   if (params.clientIp) userData.client_ip_address = params.clientIp
   if (params.clientUserAgent) userData.client_user_agent = params.clientUserAgent
 
+  // access_token in body (not URL query) — URLs leak into Sentry / Vercel
+  // logs / intermediate proxies. Body is the Graph API's recommended path.
   const body = {
+    access_token: token,
     data: [{
       event_name: "Purchase",
       event_time: Math.floor(Date.now() / 1000),
@@ -82,7 +85,7 @@ export async function sendPurchaseToCAPI(params: PurchaseEvent): Promise<void> {
     }],
   }
 
-  const url = `https://graph.facebook.com/${META_API_VERSION}/${pixelId}/events?access_token=${token}`
+  const url = `https://graph.facebook.com/${META_API_VERSION}/${pixelId}/events`
 
   try {
     const res = await fetch(url, {

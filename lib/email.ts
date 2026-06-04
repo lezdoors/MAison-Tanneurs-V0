@@ -9,6 +9,20 @@ function getResend(): Resend {
   return new Resend(key)
 }
 
+// Escape user-controlled strings before interpolating into HTML email
+// bodies. Customer name / order ID / item titles flow from external
+// inputs (Revolut metadata, Supabase product titles); without escaping
+// a value like `<script>` could render as live markup in mail clients
+// that don't sanitise (varies wildly by client + render mode).
+function esc(s: string | number | undefined | null): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
 // Both sender addresses on the verified maisontanneurs.com domain — same as
 // main site's working setup. Avoids the unverified send. subdomain that
 // FormSubmit and earlier Turbo build used.
@@ -30,9 +44,9 @@ export interface OrderEmailData {
 export async function sendOrderConfirmation(data: OrderEmailData) {
   const itemsHtml = data.items
     .map((i) => `<tr>
-      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;font-family:Georgia,serif;color:#2c2a28;">${i.title}</td>
-      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;text-align:center;font-family:monospace;font-size:12px;color:#6b6864;">${i.quantity}</td>
-      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;text-align:right;font-family:Georgia,serif;color:#2c2a28;">${formatPrice(i.price * i.quantity)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;font-family:Georgia,serif;color:#2c2a28;">${esc(i.title)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;text-align:center;font-family:monospace;font-size:12px;color:#6b6864;">${esc(i.quantity)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #e6e1d4;text-align:right;font-family:Georgia,serif;color:#2c2a28;">${esc(formatPrice(i.price * i.quantity))}</td>
     </tr>`)
     .join("")
 
@@ -48,11 +62,11 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
           <div style="font-family:Georgia,serif;font-size:30px;letter-spacing:0.18em;color:#2c2a28;">MAISON TANNEURS</div>
         </div>
 
-        <p style="font-size:16px;line-height:1.6;color:#3a3835;">Dear ${data.customerName || "friend"},</p>
+        <p style="font-size:16px;line-height:1.6;color:#3a3835;">Dear ${esc(data.customerName || "friend")},</p>
         <p style="font-size:15px;line-height:1.75;color:#3a3835;">Thank you. Your piece is numbered and entering the queue at our atelier in Marrakech. Hand-cut, saddle-stitched, edge-burnished — fourteen days from hide to final stitch. A second email will follow with tracking once the piece leaves the workshop.</p>
 
         <div style="margin:32px 0;padding-top:24px;border-top:1px solid #d8d2c2;">
-          <div style="font-family:monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#8c7a5a;margin-bottom:16px;">Order ${data.orderNumber}</div>
+          <div style="font-family:monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#8c7a5a;margin-bottom:16px;">Order ${esc(data.orderNumber)}</div>
           <table style="width:100%;border-collapse:collapse;">
             <thead><tr>
               <th style="text-align:left;font-family:monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#8c7a5a;padding-bottom:8px;">Piece</th>
@@ -63,7 +77,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
           </table>
           <div style="display:flex;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid #d8d2c2;">
             <span style="font-family:monospace;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#8c7a5a;">Total</span>
-            <span style="font-family:Georgia,serif;font-size:20px;color:#2c2a28;">${formatPrice(data.total)}</span>
+            <span style="font-family:Georgia,serif;font-size:20px;color:#2c2a28;">${esc(formatPrice(data.total))}</span>
           </div>
         </div>
 
