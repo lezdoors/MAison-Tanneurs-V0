@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ConsentedAnalytics } from "@/components/ConsentedAnalytics"
 import { CookieConsent } from "@/components/CookieConsent"
+import { GoogleAnalytics } from "@/components/GoogleAnalytics"
 import { MetaPixel } from "@/components/MetaPixel"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maison-tanneurs-v0.vercel.app"
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <CookieConsent />
         <MetaPixel />
+        <GoogleAnalytics />
         <ConsentedAnalytics />
       </body>
     </html>

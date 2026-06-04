@@ -4,6 +4,8 @@ import { notFound } from "next/navigation"
 import { Navigation } from "@/components/Navigation"
 import { Footer } from "@/components/Footer"
 import { BuyButton } from "@/components/BuyButton"
+import { ProductDetails } from "@/components/ProductDetails"
+import { ProductGallery } from "@/components/ProductGallery"
 import {
   fetchProductBySlug,
   fetchAllProducts,
@@ -53,19 +55,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-20 lg:pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-7 space-y-6">
-            {gallery.map((src, i) => (
-              <div key={i} className="relative w-full aspect-[4/5] overflow-hidden bg-[var(--color-plate)]">
-                <Image
-                  src={src}
-                  alt={`${product.title} — view ${i + 1}`}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 58vw"
-                  priority={i === 0}
-                  className="object-cover"
-                />
-              </div>
-            ))}
+          <div className="lg:col-span-7">
+            <ProductGallery images={gallery} title={product.title} />
           </div>
 
           <div className="lg:col-span-5">
@@ -100,28 +91,30 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 number={number}
               />
 
-              <div>
-                <h2 className="tech-label mb-3">Materials</h2>
-                <ul className="space-y-2 text-sm">
-                  {materials.map((m) => (
-                    <li key={m} className="text-[var(--color-ink-soft)]">{m}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {!!dimensions.length && (
-                <div>
-                  <h2 className="tech-label mb-3">Dimensions</h2>
-                  <dl className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                    {dimensions.map(([k, v]) => (
-                      <div key={k} className="flex justify-between border-b border-[var(--color-rule)] py-1.5">
-                        <dt className="tech-meta">{k}</dt>
-                        <dd className="text-[var(--color-ink)]">{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              )}
+              <ProductDetails
+                items={[
+                  { title: "Materials", content: materials },
+                  ...(dimensions.length
+                    ? [{ title: "Dimensions", content: dimensions.map(([k, v]) => `${k}: ${v}`) }]
+                    : []),
+                  {
+                    title: "Care",
+                    content: [
+                      "Wipe with a soft cloth; avoid solvents and direct heat.",
+                      "Treat once a year with a neutral leather conditioner.",
+                      "Patina is intentional — full-grain leather darkens with use.",
+                    ],
+                  },
+                  {
+                    title: "Shipping & repair",
+                    content: [
+                      "Tracked worldwide express from Marrakech — typically 3–5 business days.",
+                      "Numbered, made in limited quantity. 14-day return for unused pieces.",
+                      "Lifetime repair: re-stitch, re-line, re-edge for the original owner.",
+                    ],
+                  },
+                ]}
+              />
             </div>
           </div>
         </div>
