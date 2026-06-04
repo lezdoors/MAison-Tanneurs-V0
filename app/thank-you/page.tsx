@@ -1,11 +1,31 @@
 import Link from "next/link"
 import { Navigation } from "@/components/Navigation"
 import { Footer } from "@/components/Footer"
+import { fulfillOrder } from "@/lib/fulfill-order"
 
 export const metadata = {
   title: "Thank you",
   description: "Your Maison Tanneurs order has been received.",
   robots: { index: false, follow: false },
+}
+
+// Revolut redirects the buyer here with `?order={order_id}` after a successful
+// hosted checkout. Since Revolut webhooks aren't configured on this account,
+// /thank-you is the canonical fulfillment trigger:
+//   - Confirm order state via Revolut API
+//   - Persist to Supabase orders table (idempotent on revolut_order_id)
+//   - Fire Resend confirmation + admin notification
+//   - Fire Telegram alert
+//   - Mirror Purchase event to Meta CAPI
+// Customer refreshes are safe — the helper short-circuits on existing rows.
+
+export const dynamic = "force-dynamic"
+
+function fmt(minor: number, currency: string): string {
+  const major = minor / 100
+  const symbol = currency === "EUR" ? "€" : currency === "GBP" ? "£" : currency === "USD" ? "$" : ""
+  const n = major.toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+  return symbol ? `${symbol}${n}` : `${n} ${currency}`
 }
 
 export default async function ThankYouPage({
@@ -15,6 +35,10 @@ export default async function ThankYouPage({
 }) {
   const params = await searchParams
   const orderId = params?.order ?? ""
+
+  // Trigger fulfillment side effects (idempotent). Failures here don't block
+  // the page — the customer always sees the thank-you, and we log internally.
+  const fulfillment = orderId ? await fulfillOrder(orderId) : null
 
   return (
     <main className="min-h-screen">
@@ -27,7 +51,7 @@ export default async function ThankYouPage({
         <div className="max-w-2xl mx-auto text-center">
           <span className="tech-label block mb-6">Order received</span>
           <h1 className="font-display text-[clamp(36px,5vw,68px)] leading-[1.05] tracking-[-0.012em] mb-6 text-balance">
-            Thank you.
+            Thank you{fulfillment?.view?.customerName ? `, ${fulfillment.view.customerName.split(" ")[0]}` : ""}.
           </h1>
           <p className="text-[15px] lg:text-[17px] leading-[1.85] text-[var(--color-ink-soft)] max-w-prose mx-auto mb-10">
             Your piece is numbered and entering the queue at our Marrakech atelier. You&apos;ll receive a
@@ -35,7 +59,25 @@ export default async function ThankYouPage({
             fourteen days, typically.
           </p>
 
-          {orderId && (
+          {fulfillment?.view && (
+            <div className="mb-12 pt-8 border-t border-[var(--color-rule)]">
+              <p className="tech-meta mb-3">
+                Order reference ·{" "}
+                <span className="text-[var(--color-ink)] tracking-[0.18em]">{fulfillment.view.orderNumber}</span>
+              </p>
+              <p className="font-display text-2xl">{fmt(fulfillment.view.total, fulfillment.view.currency)}</p>
+              <ul className="mt-4 text-[14px] text-[var(--color-ink-soft)] space-y-1">
+                {fulfillment.view.items.map((i) => (
+                  <li key={i.title}>
+                    {i.title}
+                    {i.quantity > 1 ? ` × ${i.quantity}` : ""}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {orderId && !fulfillment?.view && (
             <p className="tech-meta mb-12">
               Order reference · <span className="text-[var(--color-ink)] tracking-[0.18em]">{orderId}</span>
             </p>
