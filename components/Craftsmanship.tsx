@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 // Cut · Stitch · Finish — three numbered steps on warm dark stone.
 // The visual unpacking of the editorial film that precedes it.
@@ -63,6 +64,15 @@ export function Craftsmanship() {
               </figcaption>
             </figure>
           ))}
+        </div>
+
+        <div className="text-center mt-14 lg:mt-20">
+          <Link
+            href="/atelier"
+            className="inline-flex items-center text-[11px] tracking-[0.32em] uppercase border-b border-[var(--color-ivory)] pb-1 hover:border-transparent transition-colors"
+          >
+            Visit the Atelier
+          </Link>
         </div>
       </div>
     </section>

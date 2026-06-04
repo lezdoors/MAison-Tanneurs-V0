@@ -18,9 +18,9 @@ export function ObjectOfTheEdition({ product }: Props) {
       className="bg-[var(--color-paper)] text-[var(--color-ink)] py-20 lg:py-32 px-6 lg:px-10"
       aria-label="Object of the Edition"
     >
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-20 items-center">
         <div className="lg:col-span-7">
-          <div className="relative aspect-[5/4] bg-[var(--color-plate)] overflow-hidden">
+          <div className="relative aspect-[5/4] lg:aspect-[5/4] bg-[var(--color-plate)] overflow-hidden">
             <Image
               src={productHero(product)}
               alt={product.title}
@@ -33,23 +33,23 @@ export function ObjectOfTheEdition({ product }: Props) {
         </div>
 
         <div className="lg:col-span-5 lg:pl-4">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-6 lg:mb-8">
             <span className="tech-label">§01 · Object of the Edition</span>
             <span className="h-px w-8 bg-[var(--color-rule)]" />
           </div>
 
-          <p className="tech-meta mb-4">{product.category}</p>
-          <h2 className="font-display text-[clamp(34px,4vw,56px)] leading-[1.05] tracking-[-0.012em] mb-6">
+          <p className="tech-meta mb-3 lg:mb-4">{product.category}</p>
+          <h2 className="font-display text-[clamp(30px,4vw,56px)] leading-[1.05] tracking-[-0.012em] mb-5 lg:mb-6">
             {product.title}
           </h2>
 
           {product.description && (
-            <p className="text-[15px] leading-[1.75] text-[var(--color-ink-soft)] max-w-[46ch] mb-10">
+            <p className="text-[14px] sm:text-[15px] leading-[1.75] text-[var(--color-ink-soft)] max-w-[46ch] mb-8 lg:mb-10">
               {product.description}
             </p>
           )}
 
-          <div className="flex items-center gap-5 mb-8">
+          <div className="flex items-center gap-5 mb-7 lg:mb-8">
             <span className="font-display text-2xl text-[var(--color-ink)]">{formatPrice(product.price)}</span>
             {number && (
               <>
@@ -60,22 +60,22 @@ export function ObjectOfTheEdition({ product }: Props) {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/product/${product.slug}`}
+              className="inline-flex items-center text-[11px] tracking-[0.32em] uppercase bg-[var(--color-ink)] text-[var(--color-ivory)] px-7 py-4 hover:bg-[var(--color-warm-black)] transition-colors"
+            >
+              Discover →
+            </Link>
             <a
               href={`mailto:hello@maisontanneurs.com?subject=${encodeURIComponent(
                 `Reserve · ${product.title}`
               )}&body=${encodeURIComponent(
-                `I'd like to reserve the ${product.title}${number ? ` (${number})` : ""} at ${formatPrice(product.price)}. Please let me know when the next edition is available and any details I should know.`
+                `I'd like to reserve the ${product.title}${number ? ` (${number})` : ""} at ${formatPrice(product.price)}. Please let me know about the next edition.`
               )}`}
-              className="inline-flex items-center text-[11px] tracking-[0.32em] uppercase bg-[var(--color-ink)] text-[var(--color-ivory)] px-7 py-4 hover:bg-[var(--color-warm-black)] transition-colors"
-            >
-              Reserve →
-            </a>
-            <Link
-              href={`/product/${product.slug}`}
               className="inline-flex items-center text-[11px] tracking-[0.32em] uppercase border border-[var(--color-rule)] text-[var(--color-ink)] px-7 py-4 hover:border-[var(--color-ink)] transition-colors"
             >
-              Read the Dossier
-            </Link>
+              Reserve by email
+            </a>
           </div>
         </div>
       </div>
