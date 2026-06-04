@@ -66,6 +66,20 @@ const HERO_OVERRIDES = new Set<string>([
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
+// Mirrors HIDDEN_SKUS in lib/supabase.ts. These are status='available' rows
+// in Supabase that are gated from the storefront (no curated Hero yet, or
+// known-bad placeholder) — the audit must skip them too, else the gate
+// flags rows the site already correctly hides.
+const HIDDEN_SKUS = new Set<string>([
+  "test-e2e",
+  "rolltop-daypack",
+  "black-stitched-backpack",
+  "marrakech-tote-bordeaux",
+  "marrakech-tote-noir",
+  "medina-crossbody-tassel",
+  "explorer-rolltop-noir",
+])
+
 interface Product {
   id: string
   title: string
@@ -103,7 +117,10 @@ async function main(): Promise<void> {
   const failures: string[] = []
   let overrideFilesMissing = 0
 
-  for (const p of products) {
+  const visible = products.filter((p) => !HIDDEN_SKUS.has(p.slug || ""))
+  console.log(`[audit] ${products.length} published, ${visible.length} visible after HIDDEN_SKUS filter`)
+
+  for (const p of visible) {
     if (!p.title) failures.push(`${p.slug || p.id}: missing title`)
     if (!p.slug) failures.push(`${p.id}: missing slug`)
     else if (!SLUG_RE.test(p.slug)) failures.push(`${p.slug}: slug not lowercase-kebab-case`)
@@ -121,7 +138,6 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log(`[audit] ${products.length} published SKUs scanned`)
   console.log(`[audit] HERO_OVERRIDES files OK: ${HERO_OVERRIDES.size - overrideFilesMissing}/${HERO_OVERRIDES.size}`)
 
   if (failures.length > 0) {
