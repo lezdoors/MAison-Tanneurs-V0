@@ -57,28 +57,22 @@ export async function POST(request: NextRequest) {
   const number = productNumber(product)
 
   try {
+    // Minimal payload first. Revolut's hosted checkout is happy with just
+    // amount + currency + redirect_url + capture_mode. Optional fields
+    // (line_items, image_urls, customer_email) can trigger opaque 500s
+    // when the merchant account isn't pre-configured to validate them.
     const order = await createOrder({
-      amount: product.price,         // already in cents
+      amount: product.price,
       currency: CURRENCY,
       description: `${product.title}${number ? ` (${number})` : ""}`,
       customer_email: body.email,
-      external_id: `mt-${slug}-${Date.now()}`,
       redirect_url: `${siteUrl}/thank-you?order={order_id}`,
       capture_mode: "automatic",
-      line_items: [
-        {
-          name: product.title,
-          type: "physical",
-          quantity: { value: 1, unit: "piece" },
-          unit_price_amount: product.price,
-          total_amount: product.price,
-          external_id: slug,
-          image_urls: [`${siteUrl}${productHero(product)}`],
-        },
-      ],
       metadata: {
         slug,
         product_number: number,
+        product_title: product.title,
+        hero_image: `${siteUrl}${productHero(product)}`,
         site: "maison-tanneurs-v0",
       },
     })
