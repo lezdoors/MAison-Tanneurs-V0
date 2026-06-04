@@ -31,10 +31,12 @@ function fmt(minor: number, currency: string): string {
 export default async function ThankYouPage({
   searchParams,
 }: {
-  searchParams: Promise<{ order?: string }>
+  searchParams: Promise<{ order?: string; revolut_order_id?: string; order_status?: string }>
 }) {
   const params = await searchParams
-  const orderId = params?.order ?? ""
+  // Revolut appends ?revolut_order_id=<id>&order_status=COMPLETED on hosted
+  // checkout success. Accept either param name so dev/test flows still work.
+  const orderId = params?.revolut_order_id || params?.order || ""
 
   // Trigger fulfillment side effects (idempotent). Failures here don't block
   // the page — the customer always sees the thank-you, and we log internally.

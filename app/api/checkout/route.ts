@@ -55,15 +55,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, reason: "sold-out" }, { status: 409 })
 
   const number = productNumber(product)
+  // Revolut does NOT substitute template placeholders like {order_id} in
+  // redirect_url. On hosted-checkout success it appends `?revolut_order_id=<id>`
+  // automatically — /thank-you reads that query param.
+  const heroPath = productHero(product)
+  const heroAbsolute = heroPath.startsWith("http") ? heroPath : `${siteUrl}${heroPath}`
 
   try {
     const order = await createOrder({
       amount: product.price,         // already in cents
       currency: CURRENCY,
-      description: `${product.title}${number ? ` (${number})` : ""}`,
-      customer_email: body.email,
-      external_id: `mt-${slug}-${Date.now()}`,
-      redirect_url: `${siteUrl}/thank-you?order={order_id}`,
+      description: `${product.title}${number ? ` · ${number}` : ""}`,
+      ...(body.email ? { customer_email: body.email } : {}),
+      redirect_url: `${siteUrl}/thank-you`,
       capture_mode: "automatic",
       line_items: [
         {
@@ -73,7 +77,7 @@ export async function POST(request: NextRequest) {
           unit_price_amount: product.price,
           total_amount: product.price,
           external_id: slug,
-          image_urls: [`${siteUrl}${productHero(product)}`],
+          image_urls: [heroAbsolute],
         },
       ],
       metadata: {
