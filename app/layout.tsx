@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import { ConsentedAnalytics } from "@/components/ConsentedAnalytics"
+import { CookieConsent } from "@/components/CookieConsent"
+import { MetaPixel } from "@/components/MetaPixel"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maison-tanneurs-v0.vercel.app"
 
@@ -55,7 +57,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased font-body">
         {children}
-        <Analytics />
+        <CookieConsent />
+        <MetaPixel />
+        <ConsentedAnalytics />
       </body>
     </html>
   )
