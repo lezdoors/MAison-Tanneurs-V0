@@ -25,6 +25,20 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Origin used for Revolut redirect_url + image absolute URLs MUST come
+  // from a server-controlled env, not the (attacker-controlled) Host header.
+  // Falling back to request.headers.get("host") is an open-redirect vector:
+  // a poisoned Host would send the customer to an attacker domain after
+  // payment. Fail closed if NEXT_PUBLIC_SITE_URL isn't set.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  if (!siteUrl) {
+    console.error("[checkout] NEXT_PUBLIC_SITE_URL is not set — refusing to use Host header")
+    return NextResponse.json(
+      { ok: false, reason: "misconfigured", message: "Reserve via email instead" },
+      { status: 503 },
+    )
+  }
+
   let body: { slug?: string; email?: string }
   try {
     body = await request.json()
@@ -40,7 +54,6 @@ export async function POST(request: NextRequest) {
   if (product.available_quantity <= 0)
     return NextResponse.json({ ok: false, reason: "sold-out" }, { status: 409 })
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${request.headers.get("host")}`
   const number = productNumber(product)
 
   try {
