@@ -75,7 +75,7 @@ export default function TermsPage() {
         shipping. (Restocking fee policy: 0% — pending final confirmation.)
       </p>
 
-      <h2>7 · Lifetime repair guarantee</h2>
+      <h2 id="lifetime-repair">7 · Lifetime repair guarantee</h2>
       <p>
         Every Maison Tanneurs piece carries our lifetime repair promise: re-stitch, re-line, re-edge for the
         original owner, complimentary, ship-both-ways included. The guarantee covers normal wear from carrying;

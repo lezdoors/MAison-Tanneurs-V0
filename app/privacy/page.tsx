@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <p>
         This Privacy Policy explains how <strong>Akal Digital Services Ltd</strong> (&ldquo;Maison Tanneurs&rdquo;,
         &ldquo;we&rdquo;, &ldquo;us&rdquo;) collects, uses, and shares your personal data when you visit{" "}
-        <a href="https://maisontanneurs.com">maisontanneurs.com</a> or contact us about a piece. We are the data
+        <a href="https://www.maisontanneurs.com">maisontanneurs.com</a> or contact us about a piece. We are the data
         controller for all personal data processed through the site.
       </p>
 
