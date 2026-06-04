@@ -9,8 +9,11 @@ function getResend(): Resend {
   return new Resend(key)
 }
 
+// Both sender addresses on the verified maisontanneurs.com domain — same as
+// main site's working setup. Avoids the unverified send. subdomain that
+// FormSubmit and earlier Turbo build used.
 const FROM_ORDERS = "Maison Tanneurs <orders@maisontanneurs.com>"
-const FROM_NEWSLETTER = "Maison Tanneurs <newsletter@send.maisontanneurs.com>"
+const FROM_NEWSLETTER = "Maison Tanneurs <hello@maisontanneurs.com>"
 const REPLY_TO = "hello@maisontanneurs.com"
 const ADMIN = "hello@maisontanneurs.com"
 
