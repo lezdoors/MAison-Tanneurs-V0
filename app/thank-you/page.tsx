@@ -11,10 +11,12 @@ export const metadata = {
 export default async function ThankYouPage({
   searchParams,
 }: {
-  searchParams: Promise<{ order?: string }>
+  searchParams: Promise<{ order?: string; order_id?: string }>
 }) {
   const params = await searchParams
-  const orderId = params?.order ?? ""
+  // Revolut appends `?order_id=<id>` on its redirect. Accept either name
+  // so a future API change (or a hand-pasted link) still surfaces the id.
+  const orderId = params?.order_id ?? params?.order ?? ""
 
   return (
     <main className="min-h-screen">
