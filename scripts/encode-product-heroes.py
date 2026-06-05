@@ -96,19 +96,29 @@ def find_hero(folder: Path) -> Path | None:
 
 
 def whiten_background(im: Image.Image) -> Image.Image:
-    """If the image corners are dark (alpha-flattened-to-black or saved-as-black),
-    flood-fill from each corner replacing the connected dark region with white.
-    Threshold is tight (40) so it only catches uniform-dark backgrounds, not
-    legitimate dark leather/shadow pixels on the subject.
+    """Flood-fill non-white photographer's backgrounds from each corner.
+
+    Two cases handled separately:
+      A. Black corners (saved-as-black or alpha-flattened-to-black) — tight
+         threshold (40) so the fill stops fast and doesn't bleed into dark
+         leather/shadow pixels on the subject.
+      B. Mid/light-grey corners (CYC seamless backdrops where the photographer
+         used grey instead of pure white) — fatter threshold (70) so the fill
+         covers the whole grey-to-white gradient. Safe because the bag colour
+         (cognac/teal/whatever) is far from grey 200ish in colour distance.
     """
     from PIL import ImageDraw
     w, h = im.size
     seeds = [(2, 2), (w - 3, 2), (2, h - 3), (w - 3, h - 3)]
-    THRESH = 40  # max colour distance for flood
     for seed in seeds:
-        pix = im.getpixel(seed)
-        if pix[0] < 25 and pix[1] < 25 and pix[2] < 25:
-            ImageDraw.floodfill(im, seed, (255, 255, 255), thresh=THRESH)
+        r, g, b = im.getpixel(seed)[:3]
+        if r < 25 and g < 25 and b < 25:
+            # Case A — black/dark corner
+            ImageDraw.floodfill(im, seed, (255, 255, 255), thresh=40)
+        elif 160 < r < 245 and 160 < g < 245 and 160 < b < 245:
+            # Case B — mid-grey CYC corner (skip pure-white corners since
+            # they need no fill, and skip near-bag pixels < 160)
+            ImageDraw.floodfill(im, seed, (255, 255, 255), thresh=70)
     return im
 
 
