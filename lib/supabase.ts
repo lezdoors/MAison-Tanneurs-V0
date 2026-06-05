@@ -80,7 +80,7 @@ const HERO_OVERRIDES: Set<string> = new Set([
   "medina-duffle",
   "medina-market-tote-cognac",
   "medina-rucksack-drawstring",
-  "medina-rucksack-flap-chocolate",
+  // medina-rucksack-flap-chocolate: no Drive Hero yet — falls back to Supabase pdp-white shot
   "medina-saddlebag-tooled-cognac",
   "medina-zigzag-tote-chocolate",
   "oasis-weekender-oxblood",
