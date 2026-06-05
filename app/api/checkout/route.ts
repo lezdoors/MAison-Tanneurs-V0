@@ -8,7 +8,6 @@ import { fetchProductBySlug, productHero, productNumber } from "@/lib/supabase"
 //
 // Currency: USD display + charge — matches Meta catalog + main site + ad
 // account. Revolut auto-FX-settles to GBP on the Akal merchant.
-// the Akal merchant account.
 //
 // If REVOLUT_SECRET_KEY is unset (no env on this deploy yet), returns 503
 // with a soft message so the client can fall back to mailto:reserve.
@@ -58,16 +57,17 @@ export async function POST(request: NextRequest) {
   const number = productNumber(product)
 
   try {
-    // Minimal payload first. Revolut's hosted checkout is happy with just
-    // amount + currency + redirect_url + capture_mode. Optional fields
-    // (line_items, image_urls, customer_email) can trigger opaque 500s
-    // when the merchant account isn't pre-configured to validate them.
+    // Static redirect_url — Revolut does NOT substitute `{order_id}`
+    // templates. On success Revolut appends `?order_id=<id>` (or similar)
+    // to the URL; the thank-you page reads it from window.location.
+    // Tracking the order via metadata + the webhook is the source of
+    // truth, not the redirect URL.
     const order = await createOrder({
       amount: product.price,
       currency: CURRENCY,
       description: `${product.title}${number ? ` (${number})` : ""}`,
       customer_email: body.email,
-      redirect_url: `${siteUrl}/thank-you?order={order_id}`,
+      redirect_url: `${siteUrl}/thank-you`,
       capture_mode: "automatic",
       metadata: {
         slug,
