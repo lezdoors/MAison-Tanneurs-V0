@@ -6,7 +6,8 @@ import { fetchProductBySlug, productHero, productNumber } from "@/lib/supabase"
 // Body: { slug: string, email?: string }
 // Returns { url } — the Revolut hosted checkout to redirect the customer to.
 //
-// Currency: EUR display + charge. Revolut settles to GBP automatically on
+// Currency: USD display + charge — matches Meta catalog + main site + ad
+// account. Revolut auto-FX-settles to GBP on the Akal merchant.
 // the Akal merchant account.
 //
 // If REVOLUT_SECRET_KEY is unset (no env on this deploy yet), returns 503
@@ -15,7 +16,7 @@ import { fetchProductBySlug, productHero, productNumber } from "@/lib/supabase"
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-const CURRENCY = "EUR"
+const CURRENCY = "USD"
 
 export async function POST(request: NextRequest) {
   if (!process.env.REVOLUT_SECRET_KEY) {
