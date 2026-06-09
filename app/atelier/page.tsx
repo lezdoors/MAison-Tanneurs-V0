@@ -22,8 +22,8 @@ const SLIDES = [
     title: "Marrakech",
     description:
       "A small workshop behind a ryad door. Seven artisans, no machines, no apprentices learning on the customer's piece.",
-    media: "/tanneurs/lifestyle/teal-ryad.webp",
-    alt: "Woman in a teal-tiled Moorish ryad courtyard with a Maison Tanneurs bag",
+    media: "/tanneurs/atelier/wide-scene.webp",
+    alt: "Wide interior of the Marrakech atelier",
   },
   {
     title: "The Hides",

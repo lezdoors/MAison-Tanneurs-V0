@@ -33,7 +33,7 @@ ASSETS = [
     ("Maison tanneurs Atelier assets /Model-field- horse.png",        "lifestyle/field-horse.webp",        2400, 82),
     ("Maison tanneurs Atelier assets /model-white suit-kilim bag-HD.png", "lifestyle/white-suit-kilim.webp", 2400, 82),
     ("Maison tanneurs Atelier assets /Model-bench-desert-HD.png",     "lifestyle/bench-desert.webp",       2400, 82),
-    ("Maison tanneurs Atelier assets /Hero-model-teal-ryad.png",      "lifestyle/teal-ryad.webp",          2400, 82),
+    # Removed from approved pool: model face reads wrong in review.
     ("Maison tanneurs Atelier assets /Hero-Model-white-ryad.png",     "lifestyle/white-ryad.webp",         2400, 82),
 
     # ─── ATELIER (workshop, hands, materials in context) ───────────────

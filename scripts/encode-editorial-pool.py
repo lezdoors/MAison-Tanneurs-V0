@@ -31,7 +31,7 @@ ASSETS = [
     (DRIVE / "model-lavander field- 00.png", "lifestyle/lavender-field.webp",   2400, 80),
 
     # ─── /atelier page chapters — each chapter gets a DISTINCT shot ──────
-    (DRIVE / "Hero-model-teal-ryad.png",     "lifestyle/teal-ryad.webp",        2400, 82),
+    # Removed from approved pool: model face reads wrong in review.
     (DRIVE / "Boutique Wide.png",            "atelier/boutique-wide.webp",      2400, 82),
     (DRIVE / "leather-table-atelier.png",    "atelier/leather-workbench.webp",  1800, 82),
     (DRIVE / "Ateler scene.png",             "atelier/wide-scene.webp",         2400, 82),
