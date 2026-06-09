@@ -27,7 +27,7 @@ function Frame({ src, alt, priority }: { src: string; alt: string; priority?: bo
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={() => setPos(null)}
-      className="relative w-full aspect-[4/5] overflow-hidden bg-[var(--color-plate)] group cursor-zoom-in"
+      className="relative w-full aspect-[4/5] overflow-hidden bg-white group cursor-zoom-in"
     >
       <Image
         src={src}
@@ -36,7 +36,7 @@ function Frame({ src, alt, priority }: { src: string; alt: string; priority?: bo
         sizes="(max-width: 1024px) 100vw, 58vw"
         priority={priority}
         loading={priority ? "eager" : "lazy"}
-        className={`object-cover transition-opacity duration-300 ${pos ? "opacity-0 lg:opacity-0" : "opacity-100"}`}
+        className={`object-contain p-4 lg:p-8 transition-opacity duration-300 ${pos ? "opacity-0 lg:opacity-0" : "opacity-100"}`}
       />
       {/* Hover-zoom layer — only renders when cursor is in-frame on desktop */}
       {pos && (
@@ -56,7 +56,7 @@ function Frame({ src, alt, priority }: { src: string; alt: string; priority?: bo
 
 export function ProductGallery({ images, title }: Props) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {images.map((src, i) => (
         <Frame key={src + i} src={src} alt={`${title} — view ${i + 1}`} priority={i === 0} />
       ))}

@@ -57,9 +57,9 @@ export function BuyButton({ slug, title, price, number }: Props) {
       <button
         onClick={onClick}
         disabled={loading}
-        className="block w-full bg-[var(--color-ink)] text-[var(--color-ivory)] hover:bg-[var(--color-warm-black)] disabled:opacity-60 disabled:cursor-wait text-center px-10 py-5 text-[11px] tracking-[0.32em] uppercase transition-colors"
+        className="block w-full bg-[var(--color-ink)] text-[var(--color-ivory)] hover:bg-[var(--color-warm-black)] disabled:opacity-60 disabled:cursor-wait text-center px-10 py-5 text-[11px] tracking-[0.28em] uppercase transition-colors"
       >
-        {loading ? "Opening checkout…" : `Buy now — ${formatPrice(price)}`}
+        {loading ? "Opening availability..." : `Request availability - ${formatPrice(price)}`}
       </button>
       {error && (
         <p className="text-xs text-[var(--color-oxblood)] leading-relaxed">
@@ -67,8 +67,8 @@ export function BuyButton({ slug, title, price, number }: Props) {
         </p>
       )}
       <p className="text-xs text-[var(--color-ink-muted)] leading-relaxed">
-        Numbered and made in limited quantity. Secure checkout via Revolut. Fourteen-day lead time from
-        Marrakech.
+        Numbered and made in limited quantity. This request opens the existing secure checkout path when available,
+        with email reservation fallback.
       </p>
     </div>
   )

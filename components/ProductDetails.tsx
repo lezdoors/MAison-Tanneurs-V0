@@ -32,10 +32,10 @@ export function ProductDetails({ items }: { items: Item[] }) {
               className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
             >
               <div className="overflow-hidden">
-                <ul className="pb-6 space-y-2.5 text-[14px] leading-[1.7] text-[var(--color-ink-soft)]">
+                <ul className="pb-6 space-y-3 text-[13px] leading-[1.75] text-[var(--color-ink-soft)]">
                   {item.content.map((line, j) => (
                     <li key={j} className="flex items-start gap-3">
-                      <span className="w-1 h-1 rounded-full bg-[var(--color-bronze)] mt-[10px] flex-shrink-0" />
+                      <span className="w-6 h-px bg-[var(--color-rule)] mt-[11px] flex-shrink-0" />
                       <span>{line}</span>
                     </li>
                   ))}
